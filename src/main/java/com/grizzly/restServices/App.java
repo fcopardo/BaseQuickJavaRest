@@ -1,6 +1,7 @@
-package com.grizzly.rest;
+package com.grizzly.restServices;
 
 
+import com.grizzly.restServices.Controllers.Hello;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -22,7 +23,7 @@ public class App {
         jettyServer.setHandler(contextHandler);
 
         ServletHolder jerseyServlet = contextHandler.addServlet(ServletContainer.class, "/*");
-        jerseyServlet.setInitParameter(ServerProperties.PROVIDER_PACKAGES, "com.grizzly.rest.Controllers");
+        jerseyServlet.setInitParameter(ServerProperties.PROVIDER_PACKAGES, Hello.class.getPackage().getName());
 
         try{
 
