@@ -22,7 +22,7 @@ public class App {
         jettyServer.setHandler(contextHandler);
 
         ServletHolder jerseyServlet = contextHandler.addServlet(ServletContainer.class, "/*");
-        jerseyServlet.setInitParameter(ServerProperties.PROVIDER_PACKAGES, "com.grizzly.rest.Services");
+        jerseyServlet.setInitParameter(ServerProperties.PROVIDER_PACKAGES, "com.grizzly.rest.Controllers");
 
         try{
 

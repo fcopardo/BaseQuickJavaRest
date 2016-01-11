@@ -1,4 +1,4 @@
-package com.grizzly.rest.Services;
+package com.grizzly.rest.Controllers;
 
 
 import javax.ws.rs.GET;
