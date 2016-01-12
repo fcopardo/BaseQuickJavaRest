@@ -1,7 +1,12 @@
 package com.grizzly.restServices.Controllers;
 
 
+import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.restServices.Services.ExampleService;
+
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
@@ -56,6 +61,38 @@ public class Hello extends BaseService {
 
             private Response veryExpensiveOperation() {
                 return Response.status(Response.Status.OK).entity("hello rest").build();
+            }
+        }).start();
+    }
+
+    @POST
+    @Path("/post")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response examplePost(@Context final UriInfo headers) {
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("/asyncpost")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void asyncPost(@Suspended final AsyncResponse asyncResponse) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response result = veryExpensiveOperation();
+                asyncResponse.resume(result);
+            }
+
+            private Response veryExpensiveOperation() {
+
+                GenericRestCall<Void, Void, Void> restCall = ExampleService.postCall(null);
+                if(restCall.get()){
+                    return Response.status(Response.Status.OK).build();
+                }
+                else{
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
             }
         }).start();
     }
