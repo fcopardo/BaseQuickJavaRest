@@ -81,9 +81,9 @@
         </dependency>-->
 
         <dependency>
-            <groupId>com.github.FcoPardo</groupId>
+            <groupId>com.github.fcopardo</groupId>
             <artifactId>EasyRest-Desktop</artifactId>
-            <version>v1.0</version>
+            <version>v1.0.1</version>
         </dependency>
 
         <dependency>
@@ -102,6 +102,24 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.1</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.52</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf.tool</groupId>
+            <artifactId>xmlworker</artifactId>
+            <version>5.5.7</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>4.2.1</version>
         </dependency>
 
 
