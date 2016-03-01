@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.github.fcopardo</groupId>
             <artifactId>EasyRest-Desktop</artifactId>
-            <version>v1.0.1</version>
+            <version>v1.0.2</version>
         </dependency>
 
         <dependency>
