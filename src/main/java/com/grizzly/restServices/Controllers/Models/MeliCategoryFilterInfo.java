@@ -12,5 +12,4 @@ public class MeliCategoryFilterInfo {
         public int totalFilters;
         public MeliFilterLight[] availableFilters;
 
-
 }

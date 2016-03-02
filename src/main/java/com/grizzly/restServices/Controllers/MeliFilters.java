@@ -7,6 +7,7 @@ import com.grizzly.restServices.Controllers.Models.MLFilterResults;
 import com.grizzly.restServices.Controllers.Models.MLFilterResultsLight;
 import com.grizzly.restServices.Controllers.Models.MeliCategoryFilterInfo;
 import com.grizzly.restServices.Controllers.Models.WorkResults;
+import com.grizzly.restServices.Excel.ExcelFunctions;
 import com.grizzly.restServices.Models.MeliCategory;
 import com.grizzly.restServices.Models.MeliFilter;
 import com.grizzly.restServices.Models.MeliFilterLight;
@@ -148,6 +149,13 @@ public class MeliFilters extends BaseService {
                 info.category = workResults.category;
                 info.categoryName = workResults.categoryName;
                 info.totalFilters = workResults.totalFilters;
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ExcelFunctions.exportCategory(info);
+                    }
+                }).start();
 
                 asyncResponse.resume(Response.status(Response.Status.OK).entity(info).build());
             }

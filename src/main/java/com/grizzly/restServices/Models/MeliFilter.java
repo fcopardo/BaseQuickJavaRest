@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class MeliFilter extends MeliFilterValue{
 
     private MeliFilterValue[] values;
+    private String type;
 
     public MeliFilterValue[] getValues() {
         return values;
@@ -16,5 +17,13 @@ public class MeliFilter extends MeliFilterValue{
 
     public void setValues(MeliFilterValue[] values) {
         this.values = values;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

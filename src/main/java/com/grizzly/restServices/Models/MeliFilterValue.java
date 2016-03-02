@@ -10,7 +10,6 @@ public class MeliFilterValue {
 
     protected String id;
     protected String name;
-    protected String type;
     protected int results;
 
     public String getId() {
@@ -37,11 +36,4 @@ public class MeliFilterValue {
         this.results = results;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
