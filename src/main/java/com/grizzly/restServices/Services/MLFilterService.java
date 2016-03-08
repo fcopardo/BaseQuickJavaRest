@@ -23,7 +23,7 @@ public class MLFilterService {
     public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCall(Action1<MeliFilter[]> action, String site, String category){
 
         GenericRestCall<Void, MeliAvailableFilters, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
-        .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category)
+        .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
         .isCacheEnabled(true)
         .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(new afterTaskCompletion<MeliAvailableFilters>() {
@@ -43,7 +43,7 @@ public class MLFilterService {
     public static GenericRestCall<Void, MeliAvailableFiltersLight, String> getFiltersCallLight(Action1<MeliFilterLight[]> action, String site, String category){
 
         GenericRestCall<Void, MeliAvailableFiltersLight, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFiltersLight.class, String.class)
-                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category)
+                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
                 .isCacheEnabled(true)
                 .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(new afterTaskCompletion<MeliAvailableFiltersLight>() {
