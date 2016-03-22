@@ -83,7 +83,9 @@
         <dependency>
             <groupId>com.github.fcopardo</groupId>
             <artifactId>EasyRest-Desktop</artifactId>
-            <version>v1.0.2</version>
+            <!--<version>v1.0.2</version>-->
+            <!--<version>develop-v1.0.2-gec46a77-4</version>-->
+            <version>develop-SNAPSHOT</version>
         </dependency>
 
         <dependency>
