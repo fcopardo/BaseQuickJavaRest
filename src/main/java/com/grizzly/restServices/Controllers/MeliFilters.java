@@ -11,6 +11,7 @@ import com.grizzly.restServices.Excel.ExcelFunctions;
 import com.grizzly.restServices.Models.MeliCategory;
 import com.grizzly.restServices.Models.MeliFilter;
 import com.grizzly.restServices.Models.MeliFilterLight;
+import com.grizzly.restServices.Services.MLCategoryService;
 import com.grizzly.restServices.Services.MLFilterService;
 import org.springframework.http.HttpMethod;
 import rx.Subscriber;
@@ -103,19 +104,9 @@ public class MeliFilters extends BaseService {
                         categoryCall.setUrl("https://api.mercadolibre.com/categories/"+ category)
                                 .setMethodToCall(HttpMethod.GET)
                                 .isCacheEnabled(true)
-                                .addSuccessSubscriber(new Subscriber<RestResults<MeliCategory>>() {
+                                .addSuccessSubscriber(new Action1<RestResults<MeliCategory>>() {
                                     @Override
-                                    public void onCompleted() {
-
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable throwable) {
-
-                                    }
-
-                                    @Override
-                                    public void onNext(RestResults<MeliCategory> meliCategoryRestResults) {
+                                    public void call(RestResults<MeliCategory> meliCategoryRestResults) {
                                         workResults.completedTasks = workResults.completedTasks+1;
                                         workResults.category = finalCategory;
                                         if(meliCategoryRestResults.isSuccessful() && meliCategoryRestResults.getSubscriberEntity() !=null) {
@@ -159,7 +150,6 @@ public class MeliFilters extends BaseService {
                 asyncResponse.resume(Response.status(Response.Status.OK).entity(info).build());
             }
         }).start();
-
     }
 
     private Action1<MeliFilter[]> createSimpleMeliFilterAction(AsyncResponse asyncResponse, String finalCategory){
@@ -186,6 +176,29 @@ public class MeliFilters extends BaseService {
                 asyncResponse.resume(Response.status(Response.Status.OK).entity(results).build());
             }
         };
+    }
+
+    /** New filter zone!
+     *
+     */
+
+    @GET
+    @Path("/category")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void getChildren(@Suspended final AsyncResponse asyncResponse, @Context UriInfo info) {
+
+        String category = info.getQueryParameters().getFirst("category");
+        String site = category.substring(0,2);
+
+        if(site == null || site.trim() == "") site = "MLM";
+        if(category == null || category.trim() == "") category = "MLM1459";
+
+        MLCategoryService.getCategories(new Action1<MeliCategory>() {
+            @Override
+            public void call(MeliCategory meliCategory) {
+                asyncResponse.resume(Response.status(Response.Status.OK).entity(meliCategory).build());
+            }
+        }, category);
     }
 
 }

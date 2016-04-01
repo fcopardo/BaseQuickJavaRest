@@ -83,40 +83,40 @@
         <dependency>
             <groupId>com.github.fcopardo</groupId>
             <artifactId>EasyRest-Desktop</artifactId>
-            <!--<version>v1.0.2</version>-->
+            <version>v1.0.2-DEVELOP</version>
             <!--<version>develop-v1.0.2-gec46a77-4</version>-->
-            <version>develop-SNAPSHOT</version>
-        </dependency>
+        <!--<version>develop-SNAPSHOT</version>-->
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>2.7</version>
-        </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-multipart</artifactId>
+        <version>2.7</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>4.2.2.RELEASE</version>
-        </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>4.2.2.RELEASE</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
-        </dependency>
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.1</version>
+    </dependency>
 
-        <!--<dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.52</version>
-        </dependency>
+    <!--<dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>1.52</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.itextpdf.tool</groupId>
-            <artifactId>xmlworker</artifactId>
-            <version>5.5.7</version>
-        </dependency>-->
+    <dependency>
+        <groupId>com.itextpdf.tool</groupId>
+        <artifactId>xmlworker</artifactId>
+        <version>5.5.7</version>
+    </dependency>-->
 
         <dependency>
             <groupId>com.lowagie</groupId>
