@@ -1,6 +1,7 @@
 package com.grizzly.restServices;
 
 
+import com.grizzly.rest.EasyRest;
 import com.grizzly.restServices.Controllers.Hello;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -16,6 +17,7 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
+        EasyRest.setDebugMode(false);
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
 

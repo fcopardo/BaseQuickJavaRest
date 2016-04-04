@@ -23,11 +23,16 @@ public class MLCategoryService {
         getChildrenCall(action1, category).execute(true);
     }
 
+    public static void getAllCategories(Action1<RestResults<MeliCategory>> action, String category){
+        getChildrenCall(action, category).execute(true);
+    }
+
     public static GenericRestCall<Void, MeliCategory, String> getChildrenCall(Action1<RestResults<MeliCategory>> action, String category){
 
         return new GenericRestCall<>(Void.class, MeliCategory.class, String.class)
                 .setUrl("https://api.mercadolibre.com/categories/"+category)
                 .isCacheEnabled(true)
+                .setCacheTime(10800000L)
                 .setMethodToCall(HttpMethod.GET)
                 .addSuccessSubscriber(action)
                 .setAutomaticCacheRefresh(true);

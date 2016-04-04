@@ -15,6 +15,9 @@ public class MeliCategory extends MeliCategoryNode{
     @JsonProperty("children_categories")
     protected MeliCategoryNode[] childrenCategories;
 
+    @JsonProperty("extra_operations")
+    protected int operations;
+
     public MeliCategoryNode[] getPathFromRoot() {
         return pathFromRoot;
     }
@@ -25,6 +28,14 @@ public class MeliCategory extends MeliCategoryNode{
 
     public MeliCategoryNode[] getChildrenCategories() {
         return childrenCategories;
+    }
+
+    public int getOperations() {
+        return operations;
+    }
+
+    public void setOperations(int operations) {
+        this.operations = operations;
     }
 
     public void setChildrenCategories(MeliCategoryNode[] childrenCategories) {

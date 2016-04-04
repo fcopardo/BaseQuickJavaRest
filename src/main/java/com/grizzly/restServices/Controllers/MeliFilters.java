@@ -9,6 +9,7 @@ import com.grizzly.restServices.Controllers.Models.MeliCategoryFilterInfo;
 import com.grizzly.restServices.Controllers.Models.WorkResults;
 import com.grizzly.restServices.Excel.ExcelFunctions;
 import com.grizzly.restServices.Models.MeliCategory;
+import com.grizzly.restServices.Models.MeliCategoryNode;
 import com.grizzly.restServices.Models.MeliFilter;
 import com.grizzly.restServices.Models.MeliFilterLight;
 import com.grizzly.restServices.Services.MLCategoryService;
@@ -199,6 +200,152 @@ public class MeliFilters extends BaseService {
                 asyncResponse.resume(Response.status(Response.Status.OK).entity(meliCategory).build());
             }
         }, category);
+    }
+
+    @GET
+    @Path("/categories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void getChildrens(@Suspended final AsyncResponse asyncResponse, @Context UriInfo info) {
+
+        String category = info.getQueryParameters().getFirst("category");
+        if(category == null || category.trim() == "") category = "MLM1459";
+
+        MLCategoryService.getCategories(new Action1<MeliCategory>() {
+            @Override
+            public void call(MeliCategory meliCategory) {
+
+                Responser responseStatus = new Responser();
+                responseStatus.setExpectedOperations(meliCategory.getChildrenCategories().length);
+
+                for(MeliCategoryNode node : meliCategory.getChildrenCategories()){
+                    System.out.println("Node : "+node.getId() + " - "+node.getName());
+
+                    MLCategoryService.getCategories(new Action1<MeliCategory>() {
+                        @Override
+                        public void call(MeliCategory meliCategory) {
+                            MLCategoryService.getAllCategories(new Action1<RestResults<MeliCategory>>() {
+                                @Override
+                                public void call(RestResults<MeliCategory> meliCategoryRestResults) {
+                                    responseStatus.addDoneOperations(1);
+                                    if(meliCategoryRestResults.isSuccessful()){
+                                        if(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length>0){
+                                            responseStatus.addExpectedOperations(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length);
+                                            for(MeliCategoryNode node1:meliCategoryRestResults.getSubscriberEntity().getChildrenCategories()){
+                                                System.out.println("Internal Node : "+node1.getId() + " - "+node1.getName());
+                                                MLCategoryService.getAllCategories(new Action1<RestResults<MeliCategory>>() {
+                                                    @Override
+                                                    public void call(RestResults<MeliCategory> meliCategoryRestResults) {
+                                                        responseStatus.addDoneOperations(1);
+                                                    }
+                                                }, node1.getId());
+                                            }
+                                        }
+                                    }
+                                }
+                            }, meliCategory.getId());
+                        }
+                    }, node.getId());
+                }
+                int i = 0;
+                while(!responseStatus.Done()){
+                    i++;
+                }
+                System.out.println("Waiting Time:"+i);
+
+                meliCategory.setOperations(responseStatus.DoneOperations);
+                asyncResponse.resume(Response.status(Response.Status.OK).entity(meliCategory).build());
+            }
+        }, category);
+    }
+
+
+    @GET
+    @Path("/allfilters")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void getAllFilters(@Suspended final AsyncResponse asyncResponse, @Context UriInfo info) {
+
+        String category = info.getQueryParameters().getFirst("category");
+        if(category == null || category.trim() == "") category = "MLM1459";
+
+        MLCategoryService.getCategories(new Action1<MeliCategory>() {
+            @Override
+            public void call(MeliCategory meliCategory) {
+
+                Responser responseStatus = new Responser();
+                responseStatus.setExpectedOperations(meliCategory.getChildrenCategories().length);
+
+                for(MeliCategoryNode node : meliCategory.getChildrenCategories()){
+                    System.out.println("Node : "+node.getId() + " - "+node.getName());
+
+                    MLCategoryService.getCategories(new Action1<MeliCategory>() {
+                        @Override
+                        public void call(MeliCategory meliCategory) {
+                            MLCategoryService.getAllCategories(new Action1<RestResults<MeliCategory>>() {
+                                @Override
+                                public void call(RestResults<MeliCategory> meliCategoryRestResults) {
+                                    responseStatus.addDoneOperations(1);
+                                    if(meliCategoryRestResults.isSuccessful()){
+                                        if(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length>0){
+                                            responseStatus.addExpectedOperations(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length);
+                                            for(MeliCategoryNode node1:meliCategoryRestResults.getSubscriberEntity().getChildrenCategories()){
+                                                System.out.println("Internal Node : "+node1.getId() + " - "+node1.getName());
+                                                MLCategoryService.getAllCategories(new Action1<RestResults<MeliCategory>>() {
+                                                    @Override
+                                                    public void call(RestResults<MeliCategory> meliCategoryRestResults) {
+                                                        responseStatus.addDoneOperations(1);
+                                                    }
+                                                }, node1.getId());
+                                            }
+                                        }
+                                    }
+                                }
+                            }, meliCategory.getId());
+                        }
+                    }, node.getId());
+                }
+                int i = 0;
+                while(!responseStatus.Done()){
+                    i++;
+                }
+                System.out.println("Waiting Time:"+i);
+
+                meliCategory.setOperations(responseStatus.DoneOperations);
+                asyncResponse.resume(Response.status(Response.Status.OK).entity(meliCategory).build());
+            }
+        }, category);
+    }
+
+    class Responser {
+        public int ExpectedOperations = 0;
+        public int DoneOperations = 0;
+
+        public Responser(){}
+
+        public int getExpectedOperations() {
+            return ExpectedOperations;
+        }
+
+        public void addExpectedOperations(int operations){
+            ExpectedOperations = ExpectedOperations+operations;
+        }
+
+        public void setExpectedOperations(int expectedOperations) {
+            ExpectedOperations = expectedOperations;
+        }
+
+        public int getDoneOperations() {
+            return DoneOperations;
+        }
+
+        public boolean addDoneOperations(int doneOperations) {
+            DoneOperations = DoneOperations+doneOperations;
+            return Done();
+        }
+
+        public boolean Done(){
+            if(DoneOperations>=ExpectedOperations) return true;
+            return false;
+        }
     }
 
 }
