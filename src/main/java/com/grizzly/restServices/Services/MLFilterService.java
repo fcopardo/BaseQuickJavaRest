@@ -1,6 +1,7 @@
 package com.grizzly.restServices.Services;
 
 import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.RestResults;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.restServices.Models.MeliAvailableFilters;
 import com.grizzly.restServices.Models.MeliAvailableFiltersLight;
@@ -54,6 +55,20 @@ public class MLFilterService {
                 });
         restCall.setAutomaticCacheRefresh(true);
         return restCall;
+    }
+
+    public static void getFiltersFull(Action1<RestResults<MeliAvailableFilters>> action, String site, String category){
+        getFiltersFullCall(action, site, category).execute(true);
+    }
+
+    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersFullCall(Action1<RestResults<MeliAvailableFilters>> action, String site, String category){
+
+        return new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
+                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
+                .isCacheEnabled(true)
+                .setMethodToCall(HttpMethod.GET)
+                .addSuccessSubscriber(action)
+                .setAutomaticCacheRefresh(true);
     }
 
 }
