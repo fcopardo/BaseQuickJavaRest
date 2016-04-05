@@ -2,11 +2,16 @@ package com.grizzly.restServices.Controllers.Models.Filters;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Created by fpardo on 4/4/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder(value = {"filter_id", "filter_name", "group", "type", "values", "active"})
+//@XmlType(propOrder = {"filter_id", "filter_name", "group", "type", "values", "active"})
 public class Filter {
 
     @JsonProperty("filter_id")
