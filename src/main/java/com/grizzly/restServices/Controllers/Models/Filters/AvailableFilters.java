@@ -16,10 +16,10 @@ import javax.xml.bind.annotation.XmlType;
 public class AvailableFilters {
 
     @JsonProperty("category_id")
-    //@XmlElement(name="category_id")
+    @XmlElement(name="category_id")
     private String categoryId;
     @JsonProperty("category_name")
-    //@XmlElement(name="category_name")
+    @XmlElement(name="category_name")
     private String categoryName;
     @JsonProperty("order")
     private int order;

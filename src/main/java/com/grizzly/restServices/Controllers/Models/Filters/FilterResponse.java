@@ -19,13 +19,13 @@ public class FilterResponse {
     @JsonProperty("available_filters")
     private AvailableFilters[] availableFilters;
     @JsonIgnore
-    //@XmlTransient
+    @XmlTransient
     private List<AvailableFilters> availableFiltersList;
 
     @JsonProperty("groups")
     private Groups[] groups;
     @JsonIgnore
-    //@XmlTransient
+    @XmlTransient
     private List<Groups> groupsList;
 
     public AvailableFilters[] getAvailableFilters() {
