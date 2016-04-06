@@ -12,18 +12,16 @@ import javax.xml.bind.annotation.XmlType;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(value = {"category_id", "category_name", "order", "filters"})
-//@XmlType(propOrder = {"category_id", "category_name", "order", "filters"})
+//@XmlType(propOrder = {"categoryId", "categoryName", "order", "filters"})
 public class AvailableFilters {
 
-    @JsonProperty("category_id")
     @XmlElement(name="category_id")
     private String categoryId;
-    @JsonProperty("category_name")
     @XmlElement(name="category_name")
     private String categoryName;
-    @JsonProperty("order")
+    @XmlElement(name="order")
     private int order;
-    @JsonProperty("filters")
+    @XmlElement(name="filters")
     private Filter[] filters;
 
     public String getCategoryId() {

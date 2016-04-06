@@ -310,13 +310,14 @@ public class MeliFilters extends BaseService {
                                             responseStatus.addExpectedOperations(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length);
                                             for(MeliCategoryNode node1:meliCategoryRestResults.getSubscriberEntity().getChildrenCategories()){
                                                 System.out.println("Internal Node : "+node1.getId() + " - "+node1.getName());
-                                                MLFilterService.getFilters(new Action1<MeliFilter[]>() {
+                                                /*MLFilterService.getFilters(new Action1<MeliFilter[]>() {
                                                     @Override
                                                     public void call(MeliFilter[] meliFilters) {
                                                         Conversions.createAvailableFilters(node1.getId(), node1.getName(), meliFilters, responseStatus);
                                                         responseStatus.addDoneOperations(1);
                                                     }
-                                                }, node1.getId().substring(0,3), node1.getId());
+                                                }, node1.getId().substring(0,3), node1.getId());*/
+                                                responseStatus.addDoneOperations(1);
                                             }
                                         }
                                     }else{

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -11,25 +12,34 @@ import javax.xml.bind.annotation.XmlType;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(value = {"filter_id", "filter_name", "group", "type", "values", "active"})
-//@XmlType(propOrder = {"filter_id", "filter_name", "group", "type", "values", "active"})
+//@XmlType(propOrder = {"id", "name", "group", "type", "values", "active"})
 public class Filter {
 
+    @XmlElement(name="filter_id")
     @JsonProperty("filter_id")
     private String id;
+    @XmlElement(name="filter_name")
     @JsonProperty("filter_name")
     private String name;
+    @XmlElement(name="group")
     @JsonProperty("group")
     private String group;
+    @XmlElement(name="type")
     @JsonProperty("type")
     private String type;
+    @XmlElement(name="values")
     @JsonProperty("values")
     private Values[] values;
+    @XmlElement(name="ios_custom_key")
     @JsonProperty("ios_custom_key")
     private String[]iosCustomKeys;
+    @XmlElement(name="android_custom_key")
     @JsonProperty("android_custom_key")
     private String[]androidCustomKeys;
+    @XmlElement(name="exclusions")
     @JsonProperty("exclusions")
     private String[]exclusions;
+    @XmlElement(name="active")
     @JsonProperty("active")
     private boolean active;
 
