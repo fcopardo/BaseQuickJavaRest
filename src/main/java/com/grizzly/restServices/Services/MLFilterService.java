@@ -32,6 +32,7 @@ public class MLFilterService {
                         Observable.just(o.getAvailableFilters()).subscribe(action);
                     }
                 });
+        restCall.setCacheTime(10800000L);
         restCall.setAutomaticCacheRefresh(true);
         return restCall;
     }
@@ -52,6 +53,7 @@ public class MLFilterService {
                         Observable.just(o.getAvailableFilters()).subscribe(action);
                     }
                 });
+        restCall.setCacheTime(10800000L);
         restCall.setAutomaticCacheRefresh(true);
         return restCall;
     }

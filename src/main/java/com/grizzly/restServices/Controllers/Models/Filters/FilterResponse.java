@@ -71,7 +71,9 @@ public class FilterResponse {
 
     @JsonIgnore
     public void listsToArray(){
-        if(groupsList!=null)groups = groupsList.toArray(new Groups[0]);
-        if(availableFiltersList!=null) availableFilters = availableFiltersList.toArray(new AvailableFilters[0]);
+        if(groupsList!=null)groups = groupsList.toArray(new Groups[groupsList.size()]);
+        if(availableFiltersList!=null) availableFilters = availableFiltersList.toArray(new AvailableFilters[availableFiltersList.size()]);
+        //groupsList = null;
+        //availableFiltersList = null;
     }
 }

@@ -17,7 +17,8 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
-        //EasyRest.setDebugMode(false);
+        EasyRest.setDebugMode(false);
+        EasyRest.setQuickCachingAmount(1000);
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
 

@@ -36,10 +36,10 @@ public class Conversions {
                 values.setValueName(meliFilterValue.getName());
                 list.add(values);
             }
-            aFilter.setValues(list.toArray(new Values[0]));
+            aFilter.setValues(list.toArray(new Values[list.size()]));
             filterList.add(aFilter);
         }
-        availableFilter.setFilters(filterList.toArray(new Filter[0]));
+        availableFilter.setFilters(filterList.toArray(new Filter[filterList.size()]));
 
         if(responseStatus.getResponse() == null){
             responseStatus.setResponse(new FilterResponse());
