@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -15,14 +17,17 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FilterResponse {
 
+    @JsonProperty("available_filters")
     @XmlElement(name="available_filters")
     private AvailableFilters[] availableFilters;
     @JsonIgnore
     @XmlTransient
     private List<AvailableFilters> availableFiltersList;
 
+    @JsonProperty("groups")
     @XmlElement(name="groups")
     private Groups[] groups;
     @JsonIgnore

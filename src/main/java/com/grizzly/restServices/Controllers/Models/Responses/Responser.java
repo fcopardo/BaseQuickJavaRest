@@ -31,6 +31,7 @@ public class Responser {
     }
 
     public boolean Done(){
+        System.out.println("We have "+(ExpectedOperations - DoneOperations) + " tasks to complete");
         if(DoneOperations>=ExpectedOperations) return true;
         return false;
     }

@@ -1,7 +1,9 @@
 package com.grizzly.restServices.Services;
 
 import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.RestResults;
 import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.grizzly.restServices.Models.MeliAvailableFilters;
 import com.grizzly.restServices.Models.MeliAvailableFiltersLight;
 import com.grizzly.restServices.Models.MeliFilter;
@@ -20,12 +22,34 @@ public class MLFilterService {
         getFiltersCall(action, site, category).execute(true);
     }
 
-    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCall(Action1<MeliFilter[]> action, String site, String category){
+    public static void getFiltersSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category){
+        getFiltersCallSafe(action, failure, site, category).execute(true);
+    }
+
+
+    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCallSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category){
 
         GenericRestCall<Void, MeliAvailableFilters, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
         .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
         .isCacheEnabled(true)
         .setMethodToCall(HttpMethod.GET)
+                .setTaskCompletion(new afterTaskCompletion<MeliAvailableFilters>() {
+                    @Override
+                    public void onTaskCompleted(MeliAvailableFilters o) {
+                        Observable.just(o.getAvailableFilters()).subscribe(action);
+                    }
+                });
+        restCall.setCacheTime(10800000L);
+        restCall.setAutomaticCacheRefresh(true);
+        return restCall;
+    }
+
+    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCall(Action1<MeliFilter[]> action, String site, String category){
+
+        GenericRestCall<Void, MeliAvailableFilters, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
+                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
+                .isCacheEnabled(true)
+                .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(new afterTaskCompletion<MeliAvailableFilters>() {
                     @Override
                     public void onTaskCompleted(MeliAvailableFilters o) {

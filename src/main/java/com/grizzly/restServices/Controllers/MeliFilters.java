@@ -3,6 +3,7 @@ package com.grizzly.restServices.Controllers;
 
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.RestResults;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.grizzly.restServices.Controllers.Models.Filters.AvailableFilters;
 import com.grizzly.restServices.Controllers.Models.Filters.Filter;
 import com.grizzly.restServices.Controllers.Models.Filters.FilterResponse;
@@ -298,13 +299,21 @@ public class MeliFilters extends BaseService {
 
                                     if(meliCategoryRestResults.isSuccessful()){
 
-                                        MLFilterService.getFilters(new Action1<MeliFilter[]>() {
+                                        //responseStatus.addDoneOperations(1);
+                                        System.out.println("Tasks:"+responseStatus.getExpectedOperations());
+                                        System.out.println("Completed:"+responseStatus.getDoneOperations());
+                                        MLFilterService.getFiltersSafe(new Action1<MeliFilter[]>() {
                                             @Override
                                             public void call(MeliFilter[] meliFilters) {
                                                 Conversions.createAvailableFilters(meliCategoryRestResults.getSubscriberEntity().getId(), meliCategoryRestResults.getSubscriberEntity().getName(), meliFilters, responseStatus);
                                                 responseStatus.addDoneOperations(1);
                                             }
-                                        }, meliCategoryRestResults.getSubscriberEntity().getId().substring(0,3), meliCategoryRestResults.getSubscriberEntity().getId());
+                                        }, new afterTaskFailure() {
+                                            @Override
+                                            public void onTaskFailed(Object o, Exception e) {
+                                                responseStatus.addDoneOperations(1);
+                                            }
+                                        }, meliCategoryRestResults.getSubscriberEntity().getId().substring(0, 3), meliCategoryRestResults.getSubscriberEntity().getId());
 
                                         /*if(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length>0){
                                             responseStatus.addExpectedOperations(meliCategoryRestResults.getSubscriberEntity().getChildrenCategories().length);
@@ -319,9 +328,6 @@ public class MeliFilters extends BaseService {
                                                 }, node1.getId().substring(0,3), node1.getId());
                                             }
                                         }*/
-                                        responseStatus.addDoneOperations(1);
-                                    }else{
-                                        responseStatus.addDoneOperations(1);
                                     }
                                 }
                             }, meliCategory.getId());
