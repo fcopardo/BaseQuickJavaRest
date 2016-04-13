@@ -6,6 +6,7 @@ package com.grizzly.restServices.Controllers.Models.Responses;
 public class Responser {
     public int ExpectedOperations = 0;
     public int DoneOperations = 0;
+    public int previousAmount = -1;
 
     public Responser(){}
 
@@ -31,8 +32,12 @@ public class Responser {
     }
 
     public boolean Done(){
-        System.out.println("We have "+(ExpectedOperations - DoneOperations) + " tasks to complete");
+        if(previousAmount != (ExpectedOperations - DoneOperations)) {
+            System.out.println("We have " + (ExpectedOperations - DoneOperations) + " tasks to complete");
+        }
+        previousAmount = (ExpectedOperations - DoneOperations);
         if(DoneOperations>=ExpectedOperations) return true;
         return false;
     }
 }
+git statsgit
