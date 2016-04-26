@@ -40,4 +40,3 @@ public class Responser {
         return false;
     }
 }
-git statsgit

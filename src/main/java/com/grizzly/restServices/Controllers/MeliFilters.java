@@ -16,11 +16,13 @@ import com.grizzly.restServices.Controllers.Models.Responses.Responser;
 import com.grizzly.restServices.Controllers.Models.WorkResults;
 import com.grizzly.restServices.Conversions.Conversions;
 import com.grizzly.restServices.Excel.ExcelFunctions;
-import com.grizzly.restServices.Models.*;
+import com.grizzly.restServices.Models.MeliCategory;
+import com.grizzly.restServices.Models.MeliCategoryNode;
+import com.grizzly.restServices.Models.MeliFilter;
+import com.grizzly.restServices.Models.MeliFilterLight;
 import com.grizzly.restServices.Services.MLCategoryService;
 import com.grizzly.restServices.Services.MLFilterService;
 import org.springframework.http.HttpMethod;
-import rx.Subscriber;
 import rx.functions.Action1;
 
 import javax.ws.rs.GET;
@@ -32,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -278,17 +279,23 @@ public class MeliFilters extends BaseService {
             public void call(MeliCategory meliCategory) {
 
                 GenericResponser<FilterResponse> responseStatus = new GenericResponser<>(FilterResponse.class);
-                responseStatus.setExpectedOperations(meliCategory.getChildrenCategories().length);
+                if(meliCategory.getChildrenCategories().length>0) {
+                    responseStatus.setExpectedOperations(meliCategory.getChildrenCategories().length+1);
+                }else{
+                    responseStatus.setExpectedOperations(1);
+                }
+
 
                 MLFilterService.getFilters(new Action1<MeliFilter[]>() {
                     @Override
                     public void call(MeliFilter[] meliFilters) {
                         Conversions.createAvailableFilters(meliCategory.getId(), meliCategory.getName(), meliFilters, responseStatus);
+                        responseStatus.addDoneOperations(1);
                     }
                 }, meliCategory.getId().substring(0,3),meliCategory.getId());
 
                 for(MeliCategoryNode node : meliCategory.getChildrenCategories()){
-                    System.out.println("Node : "+node.getId() + " - "+node.getName());
+                    //System.out.println("Node : "+node.getId() + " - "+node.getName());
 
                     MLCategoryService.getCategories(new Action1<MeliCategory>() {
                         @Override
@@ -300,8 +307,8 @@ public class MeliFilters extends BaseService {
                                     if(meliCategoryRestResults.isSuccessful()){
 
                                         //responseStatus.addDoneOperations(1);
-                                        System.out.println("Tasks:"+responseStatus.getExpectedOperations());
-                                        System.out.println("Completed:"+responseStatus.getDoneOperations());
+                                        //System.out.println("Tasks:"+responseStatus.getExpectedOperations());
+                                        //System.out.println("Completed:"+responseStatus.getDoneOperations());
                                         MLFilterService.getFiltersSafe(new Action1<MeliFilter[]>() {
                                             @Override
                                             public void call(MeliFilter[] meliFilters) {
