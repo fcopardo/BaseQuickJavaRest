@@ -2,7 +2,6 @@ package com.grizzly.restServices.Controllers;
 
 
 import com.grizzly.rest.GenericRestCall;
-import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.restServices.Services.ExampleService;
 
 import javax.ws.rs.GET;
@@ -96,7 +95,5 @@ public class Hello extends BaseService {
             }
         }).start();
     }
-
-
 
 }

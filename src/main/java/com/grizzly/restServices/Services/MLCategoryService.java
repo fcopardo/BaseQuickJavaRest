@@ -3,6 +3,7 @@ package com.grizzly.restServices.Services;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.RestResults;
 import com.grizzly.restServices.Models.MeliCategory;
+import com.grizzly.restServices.Models.MeliCategoryNode;
 import org.springframework.http.HttpMethod;
 import rx.Observable;
 import rx.functions.Action1;
@@ -27,10 +28,25 @@ public class MLCategoryService {
         getChildrenCall(action, category).execute(true);
     }
 
+    public static void getAllCategoriesFrom(Action1<RestResults<MeliCategoryNode[]>> action, String site){
+        getSiteCategories(action, site).execute(true);
+    }
+
     public static GenericRestCall<Void, MeliCategory, String> getChildrenCall(Action1<RestResults<MeliCategory>> action, String category){
 
         return new GenericRestCall<>(Void.class, MeliCategory.class, String.class)
                 .setUrl("https://api.mercadolibre.com/categories/"+category)
+                .isCacheEnabled(true)
+                .setCacheTime(10800000L)
+                .setMethodToCall(HttpMethod.GET)
+                .addSuccessSubscriber(action)
+                .setAutomaticCacheRefresh(true);
+    }
+
+    public static GenericRestCall<Void, MeliCategoryNode[], String> getSiteCategories(Action1<RestResults<MeliCategoryNode[]>> action, String site){
+
+        return new GenericRestCall<>(Void.class, MeliCategoryNode[].class, String.class)
+                .setUrl("https://api.mercadolibre.com/sites/"+site.toUpperCase()+"/categories/")
                 .isCacheEnabled(true)
                 .setCacheTime(10800000L)
                 .setMethodToCall(HttpMethod.GET)

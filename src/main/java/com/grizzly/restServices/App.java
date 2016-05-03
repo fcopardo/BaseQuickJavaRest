@@ -1,6 +1,5 @@
 package com.grizzly.restServices;
 
-
 import com.grizzly.rest.EasyRest;
 import com.grizzly.restServices.Controllers.Hello;
 import org.eclipse.jetty.server.Server;
