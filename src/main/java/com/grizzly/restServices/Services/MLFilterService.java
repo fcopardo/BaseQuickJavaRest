@@ -12,6 +12,9 @@ import org.springframework.http.HttpMethod;
 import rx.Observable;
 import rx.functions.Action1;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created by fpardo on 3/1/16.
@@ -19,35 +22,65 @@ import rx.functions.Action1;
 public class MLFilterService {
 
     public static void getFilters(Action1<MeliFilter[]> action, String site, String category){
-        getFiltersCall(action, site, category).execute(true);
+        getFiltersCall(action, site, category, null).execute(true);
+    }
+
+    public static void getFilters(Action1<MeliFilter[]> action, String site, String category, Map<String, Object> queryParams){
+        getFiltersCall(action, site, category, queryParams).execute(true);
     }
 
     public static void getFiltersSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category){
-        getFiltersCallSafe(action, failure, site, category).execute(true);
+        getFiltersCallSafe(action, failure, site, category, null).execute(true);
     }
 
+    public static void getFiltersSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category, Map<String, Object> queryParams){
+        getFiltersCallSafe(action, failure, site, category, queryParams).execute(true);
+    }
 
-    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCallSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category){
+    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCallSafe(Action1<MeliFilter[]> action, afterTaskFailure failure, String site, String category, Map<String, Object> queryParams){
+
+        HashMap<String, Object> myParams = new HashMap<>();
+        if(queryParams == null) queryParams = new HashMap<>();
+        queryParams.remove("category");
+        queryParams.remove("limit");
+        queryParams.remove("whitelist");
+
+        myParams.put("category", category);
+        myParams.putAll(queryParams);
+        myParams.put("limit", 1);
 
         GenericRestCall<Void, MeliAvailableFilters, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
-        .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
-        .isCacheEnabled(true)
-        .setMethodToCall(HttpMethod.GET)
+                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search")
+                .addUrlParams(myParams)
+                .isCacheEnabled(true)
+                .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(new afterTaskCompletion<MeliAvailableFilters>() {
                     @Override
                     public void onTaskCompleted(MeliAvailableFilters o) {
                         Observable.just(o.getAvailableFilters()).subscribe(action);
                     }
                 });
+        System.out.println("URL :"+restCall.getUrl());
         restCall.setCacheTime(10800000L);
         restCall.setAutomaticCacheRefresh(true);
         return restCall;
     }
 
-    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCall(Action1<MeliFilter[]> action, String site, String category){
+    public static GenericRestCall<Void, MeliAvailableFilters, String> getFiltersCall(Action1<MeliFilter[]> action, String site, String category, Map<String, Object> queryParams){
+
+        HashMap<String, Object> myParams = new HashMap<>();
+        if(queryParams == null) queryParams = new HashMap<>();
+        queryParams.remove("category");
+        queryParams.remove("limit");
+        queryParams.remove("whitelist");
+
+        myParams.put("category", category);
+        myParams.putAll(queryParams);
+        myParams.put("limit", 1);
 
         GenericRestCall<Void, MeliAvailableFilters, String> restCall = new GenericRestCall<>(Void.class, MeliAvailableFilters.class, String.class)
-                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search?category="+category+"&limit=1")
+                .setUrl("https://api.mercadolibre.com/sites/"+site+"/search")
+                .addUrlParams(myParams)
                 .isCacheEnabled(true)
                 .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(new afterTaskCompletion<MeliAvailableFilters>() {
@@ -58,6 +91,7 @@ public class MLFilterService {
                 });
         restCall.setCacheTime(10800000L);
         restCall.setAutomaticCacheRefresh(true);
+        System.out.println("URL : "+restCall.getUrl());
         return restCall;
     }
 

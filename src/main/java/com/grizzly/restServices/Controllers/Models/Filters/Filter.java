@@ -42,6 +42,13 @@ public class Filter {
     @XmlElement(name="active")
     @JsonProperty("active")
     private boolean active;
+    @XmlElement(name="depends_on")
+    @JsonProperty("depends_on")
+    private String[] dependsOn;
+
+    public Filter(){
+        getDependsOn();
+    }
 
     public String getId() {
         return id;
@@ -113,5 +120,15 @@ public class Filter {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String[] getDependsOn() {
+        if(dependsOn == null) dependsOn = new String[1];
+        dependsOn[0] = "Marca";
+        return dependsOn;
+    }
+
+    public void setDependsOn(String[] dependsOn) {
+        this.dependsOn = dependsOn;
     }
 }

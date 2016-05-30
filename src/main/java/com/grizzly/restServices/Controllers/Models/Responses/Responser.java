@@ -32,9 +32,9 @@ public class Responser {
     }
 
     public boolean Done(){
-        if(previousAmount != (ExpectedOperations - DoneOperations)) {
+        /*if(previousAmount != (ExpectedOperations - DoneOperations)) {
             System.out.println("We have " + (ExpectedOperations - DoneOperations) + " tasks to complete");
-        }
+        }*/
         previousAmount = (ExpectedOperations - DoneOperations);
         if(DoneOperations>=ExpectedOperations) return true;
         return false;
