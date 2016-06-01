@@ -1,13 +1,14 @@
 package com.grizzly.restServices.Controllers;
 
 
-import com.grizzly.restServices.Controllers.Models.Filters.Filter;
-import com.grizzly.restServices.Controllers.Models.Responses.GenericResponser;
-import com.grizzly.restServices.Conversions.Conversions;
+import com.grizzly.rest.Model.RestResults;
+import com.grizzly.restServices.Models.MLItem;
 import com.grizzly.restServices.Models.MeliCategory;
-import com.grizzly.restServices.Models.MeliFilter;
+import com.grizzly.restServices.Models.MeliCategoryNode;
+import com.grizzly.restServices.Models.MeliHistoryNode;
 import com.grizzly.restServices.Services.MLCategoryService;
-import com.grizzly.restServices.Services.MLFilterService;
+import com.grizzly.restServices.Services.MLItemService;
+import com.grizzly.restServices.Services.MLSearchHistoryService;
 import rx.functions.Action1;
 
 import javax.ws.rs.GET;
@@ -19,10 +20,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -54,84 +54,74 @@ public class MeliHistory extends BaseService {
     public void getUpdated(@Suspended final AsyncResponse asyncResponse, @Context UriInfo info) {
 
         String category = info.getQueryParameters().getFirst("category");
+        String userId = info.getQueryParameters().getFirst("user_id");
         if(category == null || category.trim() == "") category = "MLM1459";
-        Map<String, Object> params = Conversions.convertMultiToRegularMap(info.getQueryParameters(), "-");
-        List<String> whiteList = null;
-        LatchList lister = null;
+        String site = category.substring(0,3);
 
-        if(params.containsKey("whitelist")){
-            params.remove("whitelist");
-            whiteList = info.getQueryParameters().get("whitelist");
-            CountDownLatch listLatch = new CountDownLatch(1);
-            lister = new LatchList(whiteList, listLatch);
-            lister.execute();
-        }
-
-        final LatchList finalLister = lister;
-        final List<String> finalWhiteList = whiteList;
+        CountDownLatch latch = new CountDownLatch(1);
 
         MLCategoryService.getCategories(new Action1<MeliCategory>() {
             @Override
             public void call(MeliCategory meliCategory) {
 
-                CountDownLatch latch;
-                GenericResponser<Filter[]> responseStatus = new GenericResponser<>(Filter[].class);
-                responseStatus.setExpectedOperations(1);
-                if(finalLister !=null) finalLister.countdown();
+                List<MeliHistoryNode> responseNode = new ArrayList<MeliHistoryNode>();
 
-                latch = new CountDownLatch(1);
-
-                MLFilterService.getFilters(new Action1<MeliFilter[]>() {
-                    @Override
-                    public void call(MeliFilter[] meliFilters) {
-                        Conversions.updateFilters(meliCategory.getId(), meliCategory.getName(), meliFilters, responseStatus, finalWhiteList);
-                        latch.countDown();
-                    }
-                }, meliCategory.getId().substring(0,3),meliCategory.getId(), params);
-
-                try {
-                    latch.await();
-                    asyncResponse.resume(Response.status(Response.Status.OK).entity(responseStatus.getResponse()).build());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    asyncResponse.resume(Response.status(Response.Status.NOT_FOUND).build());
+                List<String> categories = new ArrayList<>();
+                categories.add(meliCategory.getId());
+                for(MeliCategoryNode categoryNode : meliCategory.getChildrenCategories()){
+                    categories.add(categoryNode.getId());
+                    System.out.println("My category id is "+categoryNode.getId());
                 }
+
+                MLSearchHistoryService.getUserHistory(new Action1<MeliHistoryNode[]>() {
+                    @Override
+                    public void call(MeliHistoryNode[] meliHistoryNodes) {
+
+                        CountDownLatch groupLatch = new CountDownLatch(meliHistoryNodes.length);
+
+                        for(MeliHistoryNode node : meliHistoryNodes){
+
+                            MLItemService.callItem(new Action1<RestResults<MLItem>>() {
+                                @Override
+                                public void call(RestResults<MLItem> mlItemRestResults) {
+                                    if(mlItemRestResults.isSuccessful()){
+                                        System.out.println("SUCCESS");
+                                        System.out.println("Item category:"+mlItemRestResults.getSubscriberEntity().getCategoryId());
+
+                                        //if(categories.contains(mlItemRestResults.getSubscriberEntity().getCategoryId())){
+                                        for(String s: categories){
+
+                                            System.out.println(mlItemRestResults.getSubscriberEntity().getCategoryId() +" == "+s);
+
+                                            if(s.equalsIgnoreCase(mlItemRestResults.getSubscriberEntity().getCategoryId())){
+                                                responseNode.add(node);
+                                                groupLatch.countDown();
+                                            }
+                                        }
+                                        /*if(categories.contains(mlItemRestResults.getSubscriberEntity().getCategoryId())){
+
+                                        }*/
+                                    }
+                                }
+                            }, node.getItemId(), true);
+                        }
+
+                        try {
+                            groupLatch.await();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, site, userId, true);
+
+                latch.countDown();
+                asyncResponse.resume(Response.status(Response.Status.OK).entity(responseNode.toArray(new MeliHistoryNode[responseNode.size()])).build());
             }
-        }, category, params);
-    }
-
-    class LatchList implements Runnable {
-
-        public List<String> whiteList;
-        public CountDownLatch listLatch;
-
-        public LatchList(List<String> aWhiteList, CountDownLatch aLatch){
-            whiteList = aWhiteList;
-            listLatch = aLatch;
-        }
-
-        @Override
-        public void run() {
-            if(whiteList.size() == 1){
-                String joinedString = whiteList.get(0);
-                whiteList.removeAll(whiteList);
-                String[] newList = joinedString.split(",");
-                whiteList.addAll(Arrays.asList(newList));
-            }
-            listLatch.countDown();
-        }
-
-        public void countdown(){
-            try {
-                listLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void execute(){
-            Thread t = new Thread(this);
-            t.start();
+        }, category, null);
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

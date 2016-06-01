@@ -32,6 +32,7 @@ public class MLSearchHistoryService {
     public static GenericRestCall<Void, MeliHistoryNode[], String> getHistoryCall(Action1<RestResults<MeliHistoryNode[]>> action, String site, String userId){
 
         return new GenericRestCall<>(Void.class, MeliHistoryNode[].class, String.class)
+
                 .isCacheEnabled(false)
                 .setMethodToCall(HttpMethod.GET)
                 .addSuccessSubscriber(action);

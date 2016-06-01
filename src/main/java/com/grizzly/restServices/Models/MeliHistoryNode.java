@@ -31,4 +31,20 @@ public class MeliHistoryNode {
     public void setVisitDate(Date visitDate) {
         this.visitDate = visitDate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MeliHistoryNode that = (MeliHistoryNode) o;
+
+        return itemId.equals(that.itemId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return itemId.hashCode();
+    }
 }
